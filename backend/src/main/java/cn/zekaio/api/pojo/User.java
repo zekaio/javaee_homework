@@ -5,14 +5,16 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import org.apache.ibatis.type.Alias;
 
 import java.util.Date;
 
 @Data
 @TableName(value = "users", autoResultMap = true)
+//@Alias("users")
 public class User {
     // 主键
-    private Integer user_id;
+    private Integer userId;
 
     // uuid
     private String uuid;
@@ -51,10 +53,10 @@ public class User {
     private Integer followNum;
 
     // 创建时间
-    @TableField(fill = FieldFill.INSERT)
+    // @TableField(fill = FieldFill.INSERT)
     private Date createdAt;
 
     // 修改时间
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+//    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updatedAt;
 }

@@ -27,7 +27,7 @@
 ### U1.注册
 
 ```http
-POST /users
+POST /users/register
 ```
 
 #### Request Body
@@ -354,7 +354,7 @@ GET /users/fans?uuid={uuid}&username={username}&last_follow_id={last_follow_id}&
 ### S1.登录
 
 ```http
-POST /session
+POST /session/login
 ```
 
 #### Request Body
@@ -388,7 +388,7 @@ POST /session
 ### S2.登出
 
 ```http
-DELETE /session
+DELETE /session/logout
 ```
 
 #### Response Body
