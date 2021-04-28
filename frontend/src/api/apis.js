@@ -6,14 +6,14 @@ export let apis = {};
 
 /**
  * 注册
- * POST /users
+ * POST /users/register
  * @param {string} username - 用户名
  * @param {string} password - 密码
  * @param {string} check_pwd - 再次输入密码
  */
 apis.register = (username, password, check_pwd) => {
   return instance({
-    url: '/users',
+    url: '/users/register',
     method: 'post',
     data: JSON.stringify({ username, password, check_pwd }),
   });
@@ -163,13 +163,13 @@ apis.getFansList = (queryParams, last_follow_id = 0, limit = 20) => {
 
 /**
  * 登录
- * POST /session
+ * POST /session/login
  * @param {string} username - 用户名
  * @param {string} password - 密码
  */
 apis.login = (username, password) => {
   return instance({
-    url: '/session',
+    url: '/session/login',
     method: 'post',
     data: JSON.stringify({ username, password }),
   });
@@ -177,11 +177,11 @@ apis.login = (username, password) => {
 
 /**
  * 登出
- * DELETE /session
+ * DELETE /session/logout
  */
 apis.logout = () => {
   return instance({
-    url: '/session',
+    url: '/session/logout',
     method: 'delete',
   });
 };
