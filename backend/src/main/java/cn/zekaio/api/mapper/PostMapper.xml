@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="cn.zekaio.api.dao.PostDao">
+    <resultMap id="post" type="cn.zekaio.api.pojo.Post">
+        <id property="postId" column="post_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="content" column="content"/>
+        <result property="commentsNum" column="comments_num"/>
+        <result property="imgsName" column="imgs_name"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="deletedAt" column="deleted_at"/>
+    </resultMap>
+
+    <select id="getPosts" resultMap="post">
+        select * from `posts`
+        where `deleted_at` is null
+        <if test="user_id != null">
+            and `user_id` = #{user_id}
+        </if>
+        <if test="keyword != null">
+            and `keyword` like CONCAT('%',#{keyword},'%')
+        </if>
+        <if test="last_id != null">
+            and `post_id` <![CDATA[ < ]]> #{last_id}
+        </if>
+        order by `post_id` desc
+        limit #{limit}
+    </select>
+
+    <select id="getPost" resultMap="post">
+        select *
+        from `posts`
+        where `deleted_at` is null
+          and `post_id` = #{post_id} limit 1;
+    </select>
+
+    <insert id="savePost">
+        insert into `posts`(`user_id`, `content`, `imgs_name`)
+        values (#{user_id}, #{content}, #{imgs_name});
+    </insert>
+
+    <update id="updatePost">
+        update `posts`
+        set `content`   = #{content},
+            `imgs_name` = #{imgs_name}
+        where `post_id` = #{post_id};
+    </update>
+
+    <update id="deletePost">
+        update `posts`
+        set `deleted_at` = now()
+        where `post_id` = #{post_id};
+    </update>
+</mapper>

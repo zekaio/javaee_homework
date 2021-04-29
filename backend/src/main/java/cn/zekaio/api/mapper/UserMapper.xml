@@ -54,4 +54,21 @@
         where `user_id` = #{user_id};
     </update>
 
+    <update id="updateUserFollowNum">
+        update `users`
+        set `follow_num` = #{follow_num}
+        where `user_id` = #{user_id};
+    </update>
+
+    <update id="updateUserFansNum">
+        update `users`
+        set `fans_num` = #{fans_num}
+        where `user_id` = #{user_id};
+    </update>
+
+    <update id="updateUserPostsNum">
+        update `users`
+        set `posts_num` = #{posts_num}
+        where `user_id` = #{user_id};
+    </update>
 </mapper>

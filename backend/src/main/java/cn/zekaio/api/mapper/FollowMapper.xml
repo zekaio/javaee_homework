@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="cn.zekaio.api.dao.FollowDao">
+    <resultMap id="follow" type="cn.zekaio.api.pojo.Follow">
+        <id property="followId" column="follow_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="followedUserId" column="followed_user_id"/>
+        <result property="status" column="status"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="getFollowById" resultMap="follow">
+        select *
+        from `follow`
+        where `user_id` = #{user_id}
+          and `followed_user_id` = #{followed_user_id};
+    </select>
+
+    <update id="updateFollowStatus">
+        update `follow`
+        set `status` = #{status}
+        where `follow_id` = #{follow_id};
+    </update>
+
+    <insert id="createFollow">
+        insert into `follow`(`user_id`, `followed_user_id`)
+        values (#{user_id}, #{followed_user_id});
+    </insert>
+
+    <select id="getFollowList" resultMap="follow">
+        select * from `follow` where `user_id` = #{user_id} and `status` = 1
+        <if test="last_follow_id!=null">
+            and follow_id <![CDATA[ < ]]>  #{last_follow_id}
+        </if>
+        order by follow_id desc
+        limit #{limit};
+    </select>
+
+    <select id="getFansList" resultMap="follow">
+        select * from `follow` where `followed_user_id` = #{followed_user_id} and `status` = 1
+        <if test="last_follow_id!=null">
+            and follow_id <![CDATA[ < ]]>  #{last_follow_id}
+        </if>
+        order by follow_id desc
+        limit #{limit};
+    </select>
+</mapper>

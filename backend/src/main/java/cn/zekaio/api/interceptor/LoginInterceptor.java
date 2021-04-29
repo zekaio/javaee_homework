@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 public class LoginInterceptor implements HandlerInterceptor {
    @Override
    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-       if (request.getMethod().equals("OPTION")) return true;
+       if (request.getMethod().equals("OPTIONS")) return true;
 
        HttpSession session = request.getSession();
        if (session.getAttribute("user_id") == null) {

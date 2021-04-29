@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="cn.zekaio.api.dao.CommentDao">
+    <resultMap id="comment" type="cn.zekaio.api.pojo.Comment">
+        <id property="commentId" column="comment_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="rootId" column="root_id"/>
+        <result property="postId" column="post_id"/>
+        <result property="type" column="type"/>
+        <result property="content" column="content"/>
+        <result property="commentsNum" column="comments_num"/>
+        <result property="imgName" column="img_name"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="deletedAt" column="deleted_at"/>
+    </resultMap>
+
+    <select id="getComments" resultMap="comment">
+        select * from `comments`
+        where `deleted_at` is null
+        and `type` = #{type}
+        <if test="parent_id != null">
+            and `parent_id` = #{parent_id}
+        </if>
+        <if test="root_id != null">
+            and `root_id` != #{root_id}
+        </if>
+        <if test="keyword != null">
+            and `keyword` like CONCAT('%',#{keyword},'%')
+        </if>
+        <if test="last_id != null">
+            and `comment_id` <![CDATA[ < ]]> #{last_id}
+        </if>
+        order by `comment_id` desc
+        limit #{limit}
+    </select>
+
+    <select id="getComment" resultMap="comment">
+        select *
+        from `comments`
+        where `deleted_at` is null
+          and `comment_id` = #{comment_id} limit 1;
+    </select>
+
+    <insert id="saveComment">
+        insert into `comments`(`user_id`, `content`, `img_name`, `parent_id`, `root_id`, `post_id`, `type`)
+        values (#{user_id}, #{content}, #{img_name}, #{parent_id}, #{root_id}, #{post_id}, #{type});
+    </insert>
+
+    <update id="updateComment">
+        update `comments`
+        set `content`  = #{content},
+            `img_name` = #{img_name}
+        where `comment_id` = #{comment_id};
+    </update>
+
+    <update id="deleteComment">
+        update `comments`
+        set `deleted_at` = now()
+        where `comment_id` = #{comment_id};
+    </update>
+</mapper>

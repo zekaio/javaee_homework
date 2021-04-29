@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
-//@Configuration
+@Configuration
 public class SessionConfiguration {
     @Bean("springSessionDefaultRedisSerializer")
     public RedisSerializer<Object> defaultRedisSerializer() {

@@ -1,16 +1,12 @@
 package cn.zekaio.api.pojo;
 
-//import com.baomidou.mybatisplus.annotation.FieldFill;
-//import com.baomidou.mybatisplus.annotation.TableField;
-//import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import org.apache.ibatis.type.Alias;
 
 import java.util.Date;
 
 @Data
 @TableName(value = "comments", autoResultMap = true)
-// @Alias("comments")
 public class Comment {
     // 主键
     private Integer commentId;
@@ -40,11 +36,9 @@ public class Comment {
     private String imgName;
 
     // 创建时间
-//    @TableField(fill = FieldFill.INSERT)
     private Date createdAt;
 
     // 修改时间
-//    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updatedAt;
 
     // 删除时间

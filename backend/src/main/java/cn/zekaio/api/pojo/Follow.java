@@ -1,16 +1,12 @@
 package cn.zekaio.api.pojo;
 
-//import com.baomidou.mybatisplus.annotation.FieldFill;
-//import com.baomidou.mybatisplus.annotation.TableField;
-//import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import org.apache.ibatis.type.Alias;
 
 import java.util.Date;
 
 @Data
 @TableName(value = "follow", autoResultMap = true)
-// @Alias("follow")
 public class Follow {
     // 主键
     private Integer followId;
@@ -25,10 +21,8 @@ public class Follow {
     private Integer status;
 
     // 创建时间
-//    @TableField(fill = FieldFill.INSERT)
     private Date createdAt;
 
     // 修改时间
-//    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updatedAt;
 }

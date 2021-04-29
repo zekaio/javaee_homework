@@ -1,18 +1,19 @@
 package cn.zekaio.api.service.impl;
 
+import cn.zekaio.api.dao.FollowDao;
 import cn.zekaio.api.dao.UserDao;
 import cn.zekaio.api.exception.BusinessException;
+import cn.zekaio.api.pojo.Follow;
 import cn.zekaio.api.pojo.User;
 import cn.zekaio.api.service.UserService;
+import cn.zekaio.api.util.PojoToMapUtil;
 import cn.zekaio.api.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
@@ -20,7 +21,13 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Autowired
+    private FollowDao followDao;
+
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    private PojoToMapUtil pojoToMapUtil;
 
     // 创建用户
     @Override
@@ -84,7 +91,7 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new BusinessException(404, "用户不存在");
         }
-        return Result.success(user);
+        return Result.success(pojoToMapUtil.getUserMap(user));
     }
 
     @Override
@@ -92,19 +99,109 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    // 关注或取关用户
     @Override
     public Result followUser(Map<String, String> params, HttpSession session) {
+        String username = params.get("username");
+        String status = params.get("status");
 
-        return null;
+        if (username == null) {
+            throw new BusinessException(400, "用户名错误");
+        }
+
+        if (status == null) {
+            throw new BusinessException(400, "请选择要进行的操作");
+        }
+        Integer intStatus = status.equals("true") ? 1 : 0;
+        String userId = session.getAttribute("user_id").toString();
+        User me = userDao.getUserByUserId(userId);
+        if (me == null) {
+            throw new BusinessException(404, "当前登录用户不存在");
+        }
+        if (me.getUsername().equals(username)) {
+            throw new BusinessException(400, "无法关注自己");
+        }
+
+        User other = userDao.getUserByUsername(username);
+        if (other == null) {
+            throw new BusinessException(404, "用户不存在");
+        }
+
+        Follow follow = followDao.getFollowById(me.getUserId(), other.getUserId());
+
+        if (follow == null) {
+            if (intStatus.equals(0)) {
+                throw new BusinessException(400, "未关注该用户");
+            }
+            followDao.createFollow(me.getUserId(), other.getUserId());
+            userDao.updateUserFollowNum(me.getUserId(), me.getFollowNum() + 1);
+            userDao.updateUserFansNum(other.getUserId(), other.getFansNum() + 1);
+        } else if (follow.getStatus().equals(intStatus)) {
+            throw new BusinessException(400, String.format("%s关注该用户", intStatus == 1 ? "已" : "未"));
+        } else {
+            followDao.updateFollowStatus(follow.getFollowId(), intStatus);
+            if (intStatus.equals(0)) {
+                userDao.updateUserFollowNum(me.getUserId(), me.getFollowNum() - 1);
+                userDao.updateUserFansNum(other.getUserId(), other.getFansNum() - 1);
+            } else {
+                userDao.updateUserFollowNum(me.getUserId(), me.getFollowNum() + 1);
+                userDao.updateUserFansNum(other.getUserId(), other.getFansNum() + 1);
+            }
+        }
+
+        return Result.success("成功");
+    }
+
+    private User getUserByUsernameOrUUID(String uuid, String username) {
+        User user = null;
+        if (username != null) {
+            user = userDao.getUserByUsername(username);
+        }
+        if (uuid != null) {
+            user = userDao.getUserByUUID(uuid);
+        }
+
+        if (user == null) {
+            throw new BusinessException(404, "用户不存在");
+        }
+
+        return user;
     }
 
     @Override
     public Result getFollowList(String uuid, String username, Integer lastFollowId, Integer limit) {
-        return null;
+        User user = getUserByUsernameOrUUID(uuid, username);
+
+        List<Follow> followList = followDao.getFollowList(user.getUserId(), limit, lastFollowId);
+        List<Map<String, Object>> ret = new ArrayList<>();
+        for (Follow follow : followList) {
+            Map<String, Object> map = new HashMap<>();
+
+            map.put("followed", true);
+            map.putAll(pojoToMapUtil.getFollowInfo(follow));
+
+            ret.add(map);
+        }
+
+        return Result.success(ret);
     }
 
     @Override
     public Result getFansList(String uuid, String username, Integer lastFollowId, Integer limit) {
-        return null;
+        User user = getUserByUsernameOrUUID(uuid, username);
+
+        List<Follow> followList = followDao.getFansList(user.getUserId(), limit, lastFollowId);
+        List<Map<String, Object>> ret = new ArrayList<>();
+        for (Follow follow : followList) {
+            Map<String, Object> map = new HashMap<>();
+
+            Follow f = followDao.getFollowById(follow.getFollowedUserId(), follow.getUserId());
+            map.put("followed", f != null);
+            map.putAll(pojoToMapUtil.getFollowInfo(follow));
+
+            ret.add(map);
+        }
+
+        return Result.success(ret);
     }
 }

@@ -22,6 +22,9 @@ spring:
       namespace: "java:springboot:session"
     timeout: 3600
 
+  jackson:
+    date-format: "yyyy-MM-dd HH:mm:ss"
+
 # mybatis-plus
 mybatis-plus:
   mapper-locations: classpath:cn/zekaio/api/mapper/*.xml
