@@ -12,7 +12,7 @@ public interface PostService {
 
     Result savePost(String content, MultipartFile[] imgs, HttpSession session);
 
-    Result updatePost(String content, MultipartFile[] imgs, HttpSession session);
+    Result updatePost(String postId, String content, MultipartFile[] imgs, HttpSession session);
 
     Result deletePost(String postId, HttpSession session);
 }

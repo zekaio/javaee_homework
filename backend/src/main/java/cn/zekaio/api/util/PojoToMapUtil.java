@@ -10,9 +10,11 @@ import cn.zekaio.api.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+// 数据库实体类转为返回前端的Map
 @Component
 public class PojoToMapUtil {
     @Autowired
@@ -51,8 +53,9 @@ public class PojoToMapUtil {
         map.put("comments_num", post.getCommentsNum());
         map.put("created_at", post.getCreatedAt());
         map.put("updated_at", post.getUpdatedAt());
-        map.put("imgs_name", post.getImgsName().split(","));
+        map.put("imgs_name", post.getImgsName().equals("") ? new ArrayList<>() : post.getImgsName().split(","));
 
+        // 发帖人信息
         User author = userDao.getUserByUserId(post.getUserId().toString());
         map.putAll(getUserMap(author));
 
@@ -73,11 +76,12 @@ public class PojoToMapUtil {
         map.put("created_at", comment.getCreatedAt());
         map.put("updated_at", comment.getUpdatedAt());
 
+        // 发帖人信息
         User author = userDao.getUserByUserId(comment.getUserId().toString());
         map.putAll(getUserMap(author));
 
+        // 父评论或帖子发帖人信息
         Integer parentAuthorId;
-
         if (comment.getType().equals(0)) {
             Post parent = postDao.getPost(comment.getParentId().toString());
             parentAuthorId = parent.getUserId();
@@ -85,7 +89,6 @@ public class PojoToMapUtil {
             Comment parent = commentDao.getComment(comment.getParentId().toString());
             parentAuthorId = parent.getUserId();
         }
-
         User parentUser = userDao.getUserByUserId(parentAuthorId.toString());
         map.put("parent_user_info", getUserMap(parentUser));
 

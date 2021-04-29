@@ -21,7 +21,7 @@ public class SessionServiceImpl implements SessionService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-
+    // 登录
     @Override
     public Result login(Map<String, String> params, HttpServletRequest request) {
         User user = userDao.getUserByUsername(params.get("username"));
@@ -38,6 +38,7 @@ public class SessionServiceImpl implements SessionService {
 
     }
 
+    // 退出登录
     @Override
     public Result logout(HttpServletRequest request) {
         HttpSession session = request.getSession();

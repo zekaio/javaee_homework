@@ -61,6 +61,7 @@ public class PostController {
     /**
      * 修改帖子
      *
+     * @param postId  帖子id
      * @param content 帖子内容
      * @param imgs    多张图片
      * @param session HttpSession
@@ -68,8 +69,8 @@ public class PostController {
      */
     @PutMapping("/{postId}")
     @ResponseBody
-    public Result updatePost(@RequestParam("content") String content, @RequestParam(value = "imgs", required = false) MultipartFile[] imgs, HttpSession session) {
-        return postService.updatePost(content, imgs, session);
+    public Result updatePost(@PathVariable String postId, @RequestParam("content") String content, @RequestParam(value = "imgs", required = false) MultipartFile[] imgs, HttpSession session) {
+        return postService.updatePost(postId, content, imgs, session);
     }
 
     /**

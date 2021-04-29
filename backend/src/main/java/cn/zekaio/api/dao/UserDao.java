@@ -24,5 +24,4 @@ public interface UserDao {
     void updateUserFansNum(@Param("user_id") Integer userId, @Param("fans_num") Integer fansNum);
 
     void updateUserPostsNum(@Param("user_id") Integer userId, @Param("posts_num") Integer postsNum);
-
 }

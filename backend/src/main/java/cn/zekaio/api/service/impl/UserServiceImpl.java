@@ -168,6 +168,7 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    // 获取关注列表
     @Override
     public Result getFollowList(String uuid, String username, Integer lastFollowId, Integer limit) {
         User user = getUserByUsernameOrUUID(uuid, username);
@@ -186,6 +187,7 @@ public class UserServiceImpl implements UserService {
         return Result.success(ret);
     }
 
+    // 获取粉丝列表
     @Override
     public Result getFansList(String uuid, String username, Integer lastFollowId, Integer limit) {
         User user = getUserByUsernameOrUUID(uuid, username);

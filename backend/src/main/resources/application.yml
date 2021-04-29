@@ -22,11 +22,26 @@ spring:
       namespace: "java:springboot:session"
     timeout: 3600
 
+  # json date format
   jackson:
     date-format: "yyyy-MM-dd HH:mm:ss"
+
+  # file size
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 1000MB
 
 # mybatis-plus
 mybatis-plus:
   mapper-locations: classpath:cn/zekaio/api/mapper/*.xml
   type-aliases-package: cn.zekaio.api.pojo
+
+# my config
+base:
+  dir-prefix: C:\code\temp\images
+  avatar-dir-name: avatars
+  bg-dir-name: bg
+  post-image-dir-name: posts
+  comment-image-dir-name: comments
 
