@@ -27,23 +27,24 @@
             and `parent_id` = #{parent_id}
         </if>
         <if test="root_id != null">
-            and `root_id` != #{root_id}
+            and `root_id` = #{root_id}
         </if>
         <if test="keyword != null">
-            and `keyword` like CONCAT('%',#{keyword},'%')
+            and `content` like CONCAT('%',#{keyword},'%')
         </if>
-        <if test="last_id != null">
+        <if test="last_id != null &amp;&amp; last_id > 0">
             and `comment_id` <![CDATA[ < ]]> #{last_id}
         </if>
         order by `comment_id` desc
-        limit #{limit}
+        limit #{limit};
     </select>
 
     <select id="getComment" resultMap="comment">
         select *
         from `comments`
         where `deleted_at` is null
-          and `comment_id` = #{comment_id} limit 1;
+          and `comment_id` = #{comment_id}
+        limit 1;
     </select>
 
     <insert id="saveComment">
@@ -61,6 +62,12 @@
     <update id="deleteComment">
         update `comments`
         set `deleted_at` = now()
+        where `comment_id` = #{comment_id};
+    </update>
+
+    <update id="updateCommentCommentsNum">
+        update `comments`
+        set `comments_num` = #{comments_num}
         where `comment_id` = #{comment_id};
     </update>
 </mapper>

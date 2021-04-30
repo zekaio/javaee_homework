@@ -4,6 +4,7 @@ import cn.zekaio.api.dao.UserDao;
 import cn.zekaio.api.exception.BusinessException;
 import cn.zekaio.api.pojo.User;
 import cn.zekaio.api.service.SessionService;
+import cn.zekaio.api.util.PojoToMapUtil;
 import cn.zekaio.api.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,6 +22,9 @@ public class SessionServiceImpl implements SessionService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Autowired
+    private PojoToMapUtil pojoToMapUtil;
+
     // 登录
     @Override
     public Result login(Map<String, String> params, HttpServletRequest request) {
@@ -34,8 +38,8 @@ public class SessionServiceImpl implements SessionService {
         }
         HttpSession session = request.getSession();
         session.setAttribute("user_id", user.getUserId());
-        return Result.success("登录成功");
 
+        return Result.success(pojoToMapUtil.getUserMap(user));
     }
 
     // 退出登录
@@ -43,6 +47,7 @@ public class SessionServiceImpl implements SessionService {
     public Result logout(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.removeAttribute("user_id");
+
         return Result.success("退出成功");
     }
 }

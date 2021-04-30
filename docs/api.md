@@ -183,7 +183,8 @@ GET /users/search?keyword={keyword}&last_user_uuid={last_user_uuid}&limit={limit
 	        "major": "专业",
 	        "description": "个人介绍",
 	        "posts_num": "帖子数量",
-	        "avatar": "头像文件名"
+	        "avatar": "头像文件名",
+            "followed": "是否关注"
 	    },
 	    ...
 	],
@@ -202,7 +203,7 @@ PUT /users/me/avatar
 
 #### Request Body
 
-图片文件
+formdata 图片文件 key: avatar
 
 #### Response Body
 
@@ -228,7 +229,7 @@ PUT /users/me/bg
 
 #### Request Body
 
-图片文件
+formdata 图片文件 key: bg
 
 #### Response Body
 
@@ -341,14 +342,6 @@ GET /users/fans?uuid={uuid}&username={username}&last_follow_id={last_follow_id}&
 
 `404`：用户不存在
 
-### U8.关注或取关用户
-
-#### Request Body
-
-#### Response Body
-
-#### 错误
-
 ## S.用户会话部分
 
 ### S1.登录
@@ -432,17 +425,9 @@ GET /posts?uuid={uuid}&username={username}&query={query}&last_id={last_id}&limit
 	            "uuid": "发帖人uuid",
 	            "content": "内容",
 	            "comments_num": "评论数目",
-	            "comments": [
-	                {
-	                    "comment_id": "评论id",
-	                    "parent_id": "被评论的帖子或评论的id",
-	                    "type": "是什么的评论，0是帖子，1是评论",
-	                    "content": "评论内容",
-	                    "comments_num": "评论数目",
-	                    "username": "发帖人用户名",
-	                    "uuid": "发帖人uuid"
-	                }
-	            ]
+                "imgs_name": ["图片名"],
+                "updated_at": "更新时间",
+                "created_at": "创建时间"
 	        },
 	    ]
 	,
@@ -477,15 +462,19 @@ GET /posts/{post_id}?last_comment_id={last_comment_id}&limit={limit}
 	    "uuid": "发帖人uuid",
 	    "content": "内容",
 	    "comments_num": "评论数目",
+        "imgs_name": ["图片名"],
+        "updated_at": "更新时间",
+        "created_at": "创建时间",
 	    "comments": [
 	        {
-	            "id": "评论id",
+	            "comment_id": "评论id",
 	            "parent_id": "被评论的帖子或评论的id",
 	            "type": "是什么的评论，0是帖子，1是评论",
 	            "content": "评论内容",
 	            "comments_num": "评论数目",
 	            "username": "发帖人用户名",
-	            "uuid": "发帖人uuid"
+	            "uuid": "发帖人uuid",
+                "img_name": "图片名"
 	        }
 	    ]
 	},
@@ -636,7 +625,8 @@ GET /comments?parent_id={parent_id}&type={type}&last_id={last_id}&limit={limit}
 	            "content": "评论内容",
 	            "comments_num": "评论数目",
 	            "username": "发帖人用户名",
-	            "uuid": "发帖人uuid"
+	            "uuid": "发帖人uuid",
+                "img_name": "图片名"
 	        }
 	    ]
 	},
@@ -672,7 +662,8 @@ GET /comments/{comment_id}?last_comment_id={last_comment_id}&limit={limit}
 		"content": "评论内容",
 		"comments_num": "评论数目",
 		"username": "发帖人用户名",
-		"uuid": "发帖人uuid",
+		"uuid": "发帖人uuid",,
+        "img_name": "图片名",
 		"comments": [
 		    {
 		        "id": "评论id",
@@ -681,7 +672,8 @@ GET /comments/{comment_id}?last_comment_id={last_comment_id}&limit={limit}
 		        "content": "评论内容",
 		        "comments_num": "评论数目",
 		        "username": "发帖人用户名",
-		        "uuid": "发帖人uuid"
+		        "uuid": "发帖人uuid",
+                "img_name": "图片名"
 		    }
 		]
 	},
@@ -704,11 +696,14 @@ POST /comments
 
 #### Request Body
 
+**formdata**
+
 ```json
 {
     "parent_id": "被评论的帖子或评论的id",
     "type": "是什么的评论，0是帖子，1是评论",
-    "content": "内容"
+    "content": "内容",
+    "img": "图片"
 }
 ```
 
@@ -744,9 +739,12 @@ PUT /comments/{comment_id}
 
 #### Request Body
 
+**formdata**
+
 ```json
 {
-	"content": "新内容"
+	"content": "新内容",
+    "img": "图片"
 }
 ```
 

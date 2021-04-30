@@ -1,6 +1,5 @@
 package cn.zekaio.api.dao;
 
-import cn.zekaio.api.pojo.Follow;
 import cn.zekaio.api.pojo.User;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -24,4 +23,10 @@ public interface UserDao {
     void updateUserFansNum(@Param("user_id") Integer userId, @Param("fans_num") Integer fansNum);
 
     void updateUserPostsNum(@Param("user_id") Integer userId, @Param("posts_num") Integer postsNum);
+
+    void updateUserAvatar(@Param("user_id") String userId, @Param("avatar") String avatar);
+
+    void updateUserBg(@Param("user_id") String userId, @Param("bg") String bg);
+
+    List<User> searchUser(@Param("keyword") String keyword, @Param("last_id") Integer lastId, @Param("limit") Integer limit);
 }

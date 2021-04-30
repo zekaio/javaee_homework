@@ -17,7 +17,7 @@ public class FileUtil {
     // 保存文件
     public String saveMultipartFile(MultipartFile multipartFile, String path) {
         if (multipartFile == null) {
-            throw new BusinessException(400, "图片上传失败");
+            return "";
         }
         String extensionName;
         try {

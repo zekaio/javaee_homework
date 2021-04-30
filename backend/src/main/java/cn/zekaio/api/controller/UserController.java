@@ -4,8 +4,8 @@ import cn.zekaio.api.service.UserService;
 import cn.zekaio.api.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 
@@ -31,20 +31,16 @@ public class UserController {
         return userService.createUser(params);
     }
 
-//    @PutMapping("/me/password")
-//    @ResponseBody
-//    public Result updateUserPassword(Map<String, String> params){}
-
     /**
      * 修改用户信息
      *
-     * @param params json: {
-     *               username: 用户名,
-     *               sex: 性别,
-     *               grade: 年级,
-     *               major: 专业,
-     *               description: 自我介绍
-     *               }
+     * @param params  json: {
+     *                username: 用户名,
+     *                sex: 性别,
+     *                grade: 年级,
+     *                major: 专业,
+     *                description: 自我介绍
+     *                }
      * @param session HttpSession
      * @return Result
      */
@@ -56,19 +52,29 @@ public class UserController {
 
     /**
      * 上传头像
-     * @param file
-     * @return
+     *
+     * @param avatar  头像文件
+     * @param session HttpSession
+     * @return Result
      */
-//    @PutMapping("/me/avatar")
-//    @ResponseBody
-//    public Result updateUserAvatar(@RequestBody Map<String, String> params){}
+    @PutMapping("/me/avatar")
+    @ResponseBody
+    public Result updateUserAvatar(@RequestParam MultipartFile avatar, HttpSession session) {
+        return userService.updateUserAvatar(avatar, session);
+    }
 
     /**
-     * 上传背景
+     * 上传背景图片
+     *
+     * @param bg      背景图片文件
+     * @param session HttpSession
+     * @return Result
      */
-    //    @PutMapping("/me/bg")
-//    @ResponseBody
-//    public Result updateUserBackgroundImage(@RequestBody Map<String, String> params){}
+    @PutMapping("/me/bg")
+    @ResponseBody
+    public Result updateUserBackgroundImage(@RequestParam MultipartFile bg, HttpSession session) {
+        return userService.updateUserBackgroundImage(bg, session);
+    }
 
     /**
      * 获取用户信息
@@ -93,8 +99,8 @@ public class UserController {
      */
     @GetMapping("/search")
     @ResponseBody
-    public Result searchUsers(@RequestParam String keyword, @RequestParam(required = false, name = "last_user_uuid") String lastUserUUID, @RequestParam(defaultValue = "10") Integer limit) {
-        return userService.searchUsers(keyword, lastUserUUID, limit);
+    public Result searchUsers(@RequestParam String keyword, @RequestParam(required = false, name = "last_user_uuid") String lastUserUUID, @RequestParam(defaultValue = "10") Integer limit, HttpSession session) {
+        return userService.searchUsers(keyword, lastUserUUID, limit, session);
     }
 
     /**

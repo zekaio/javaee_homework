@@ -22,20 +22,21 @@
             and `user_id` = #{user_id}
         </if>
         <if test="keyword != null">
-            and `keyword` like CONCAT('%',#{keyword},'%')
+            and `content` like CONCAT('%',#{keyword},'%')
         </if>
-        <if test="last_id != null">
+        <if test="last_id != null &amp;&amp; last_id > 0">
             and `post_id` <![CDATA[ < ]]> #{last_id}
         </if>
         order by `post_id` desc
-        limit #{limit}
+        limit #{limit};
     </select>
 
     <select id="getPost" resultMap="post">
         select *
         from `posts`
         where `deleted_at` is null
-          and `post_id` = #{post_id} limit 1;
+          and `post_id` = #{post_id}
+        limit 1;
     </select>
 
     <insert id="savePost">
@@ -53,6 +54,12 @@
     <update id="deletePost">
         update `posts`
         set `deleted_at` = now()
+        where `post_id` = #{post_id};
+    </update>
+
+    <update id="updatePostCommentsNum">
+        update `posts`
+        set `comments_num` = #{comments_num}
         where `post_id` = #{post_id};
     </update>
 </mapper>

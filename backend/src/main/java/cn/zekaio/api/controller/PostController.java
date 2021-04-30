@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/posts")
@@ -23,7 +21,7 @@ public class PostController {
      * @param username 用户名
      * @param keyword  搜索关键字
      * @param lastId   已获取帖子中最后一个帖子的id，默认为0
-     * @param limit    要获取的数目， 默认为5
+     * @param limit    要获取的数目， 默认为10
      * @return Result
      */
     @GetMapping("")
@@ -76,7 +74,8 @@ public class PostController {
     /**
      * 删除帖子
      *
-     * @param postId 帖子id
+     * @param postId  帖子id
+     * @param session HttpSession
      * @return Result
      */
     @DeleteMapping("/{postId}")

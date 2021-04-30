@@ -18,4 +18,6 @@ public interface PostDao {
     void updatePost(@Param("post_id") String postId, @Param("content") String content, @Param("imgs_name") String imgsName);
 
     void deletePost(@Param("post_id") String postId);
+
+    void updatePostCommentsNum(@Param("post_id") Integer postId, @Param("comments_num") Integer commentsNum);
 }

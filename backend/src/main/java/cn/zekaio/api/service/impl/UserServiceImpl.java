@@ -1,16 +1,19 @@
 package cn.zekaio.api.service.impl;
 
+import cn.zekaio.api.config.BaseConfiguration;
 import cn.zekaio.api.dao.FollowDao;
 import cn.zekaio.api.dao.UserDao;
 import cn.zekaio.api.exception.BusinessException;
 import cn.zekaio.api.pojo.Follow;
 import cn.zekaio.api.pojo.User;
 import cn.zekaio.api.service.UserService;
+import cn.zekaio.api.util.FileUtil;
 import cn.zekaio.api.util.PojoToMapUtil;
 import cn.zekaio.api.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.util.*;
@@ -29,9 +32,16 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PojoToMapUtil pojoToMapUtil;
 
+    @Autowired
+    private FileUtil fileUtil;
+
+    @Autowired
+    private BaseConfiguration baseConfiguration;
+
     // 创建用户
     @Override
     public Result createUser(Map<String, String> params) {
+        System.out.println(params);
         User user = userDao.getUserByUsername(params.get("username"));
         String username = params.get("username");
         String password = params.get("password");
@@ -76,6 +86,27 @@ public class UserServiceImpl implements UserService {
         return Result.success("修改成功");
     }
 
+    // 上传头像
+    @Override
+    public Result updateUserAvatar(MultipartFile avatar, HttpSession session) {
+        String path = baseConfiguration.getAvatarDirName();
+        String fileName = fileUtil.saveMultipartFile(avatar, path);
+        String userId = session.getAttribute("user_id").toString();
+        userDao.updateUserAvatar(userId, fileName);
+        return Result.success("上传成功");
+    }
+
+    // 上传背景
+    @Override
+    public Result updateUserBackgroundImage(MultipartFile bg, HttpSession session) {
+        String path = baseConfiguration.getBgDirName();
+        String fileName = fileUtil.saveMultipartFile(bg, path);
+        String userId = session.getAttribute("user_id").toString();
+        userDao.updateUserBg(userId, fileName);
+        return Result.success("上传成功");
+
+    }
+
     // 获取用户信息
     @Override
     public Result getUserInfo(String username, String uuid, HttpSession session) {
@@ -91,12 +122,47 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new BusinessException(404, "用户不存在");
         }
-        return Result.success(pojoToMapUtil.getUserMap(user));
+
+        Follow follow = followDao.getFollowById(Integer.valueOf(session.getAttribute("user_id").toString()), user.getUserId());
+
+        Map<String, Object> ret = new HashMap<>();
+        if (follow == null) {
+            ret.put("follow_status", false);
+        } else {
+            ret.put("follow_status", follow.getStatus().equals(1));
+        }
+        ret.putAll(pojoToMapUtil.getUserMap(user));
+        return Result.success(ret);
     }
 
+    // 搜索用户
     @Override
-    public Result searchUsers(String keyword, String lastUserUUID, Integer limit) {
-        return null;
+    public Result searchUsers(String keyword, String lastUserUUID, Integer limit, HttpSession session) {
+        Integer lastId = null;
+        if (lastUserUUID != null) {
+            User user = userDao.getUserByUUID(lastUserUUID);
+            if (user != null) {
+                lastId = user.getUserId();
+            }
+        }
+
+        String userId = session.getAttribute("user_id").toString();
+
+        List<User> users = userDao.searchUser(keyword, lastId, limit);
+        List<Map<String, Object>> ret = new ArrayList<>();
+        for (User user : users) {
+            Map<String, Object> map = new HashMap<>();
+            Follow follow = followDao.getFollowById(Integer.valueOf(userId), user.getUserId());
+            if (follow == null) {
+                map.put("followed", false);
+            } else {
+                map.put("followed", follow.getStatus().equals(1));
+            }
+            map.putAll(pojoToMapUtil.getUserMap(user));
+            ret.add(map);
+        }
+
+        return Result.success(ret);
     }
 
     // 关注或取关用户

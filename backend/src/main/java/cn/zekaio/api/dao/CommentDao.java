@@ -18,4 +18,6 @@ public interface CommentDao {
     void updateComment(@Param("comment_id") String commentId, @Param("content") String content, @Param("img_name") String imgName);
 
     void deleteComment(@Param("comment_id") String commentId);
+
+    void updateCommentCommentsNum(@Param("comment_id") Integer commentId, @Param("comments_num") Integer commentsNum);
 }

@@ -24,19 +24,22 @@
     <select id="getUserByUsername" resultMap="user">
         select *
         from `users`
-        where `username` = #{username} limit 1;
+        where `username` = #{username}
+        limit 1;
     </select>
 
     <select id="getUserByUserId" resultMap="user">
         select *
         from `users`
-        where `user_id` = #{user_id} limit 1;
+        where `user_id` = #{user_id}
+        limit 1;
     </select>
 
     <select id="getUserByUUID" resultMap="user">
         select *
         from `users`
-        where `uuid` = #{uuid} limit 1;
+        where `uuid` = #{uuid}
+        limit 1;
     </select>
 
     <insert id="createUser">
@@ -71,4 +74,27 @@
         set `posts_num` = #{posts_num}
         where `user_id` = #{user_id};
     </update>
+
+    <update id="updateUserAvatar">
+        update `users`
+        set `avatar` = #{avatar}
+        where `user_id` = #{user_id};
+    </update>
+
+    <update id="updateUserBg">
+        update `users`
+        set `bg` = #{bg}
+        where `user_id` = #{user_id};
+    </update>
+
+    <select id="searchUser" resultMap="user">
+        select *
+        from `users`
+        where `username` like CONCAT('%', #{keyword}, '%')
+        <if test="last_id != null">
+            and `user_id` <![CDATA[ < ]]> #{last_id}
+        </if>
+        order by `user_id`
+        limit #{limit};
+    </select>
 </mapper>

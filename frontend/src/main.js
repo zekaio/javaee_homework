@@ -83,6 +83,7 @@ Vue.prototype.$back = function() {
 };
 
 Vue.prototype.$error = function(err, errFunc) {
+  console.error(err)
   if (errFunc) {
     if (errFunc(err)) {
       return;

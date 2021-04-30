@@ -39,7 +39,7 @@ mybatis-plus:
 
 # my config
 base:
-  dir-prefix: C:\code\temp\images
+  dir-prefix: D:\code\temp\images
   avatar-dir-name: avatars
   bg-dir-name: bg
   post-image-dir-name: posts
