@@ -16,10 +16,19 @@ public class GlobalDefaultExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     @ResponseBody
-    public Result errorHandler(BusinessException e, HttpServletResponse response) {
+    public Result businessExceptionHandler(BusinessException e, HttpServletResponse response) {
         logger.error(e.getMessage());
 
         response.setStatus(e.getCode());
         return Result.error(e);
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseBody
+    public Result exceptionHandler(Exception e, HttpServletResponse response) {
+        logger.error(e.getMessage());
+
+        response.setStatus(500);
+        return Result.error("服务器错误");
     }
 }

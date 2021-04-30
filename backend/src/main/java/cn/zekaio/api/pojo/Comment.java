@@ -1,12 +1,12 @@
 package cn.zekaio.api.pojo;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import org.apache.ibatis.type.Alias;
 
 import java.util.Date;
 
 @Data
-@TableName(value = "comments", autoResultMap = true)
+@Alias("comments")
 public class Comment {
     // 主键
     private Integer commentId;

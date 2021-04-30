@@ -1,13 +1,13 @@
 package cn.zekaio.api.pojo;
 
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import org.apache.ibatis.type.Alias;
 
 import java.util.Date;
 
 @Data
-@TableName(value = "users", autoResultMap = true)
+@Alias("users")
 public class User {
     // 主键
     private Integer userId;

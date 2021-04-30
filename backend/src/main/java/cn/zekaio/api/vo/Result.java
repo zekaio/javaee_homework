@@ -33,4 +33,12 @@ public class Result {
         r.setMessage(e.getMessage());
         return r;
     }
+
+    public static Result error(String message) {
+        Result r = new Result();
+        r.setSuccess(false);
+        r.setCode(500);
+        r.setMessage(message);
+        return r;
+    }
 }
